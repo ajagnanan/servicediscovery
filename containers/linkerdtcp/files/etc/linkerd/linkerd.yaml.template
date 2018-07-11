@@ -1,0 +1,15 @@
+routers:
+  - label: default
+    servers:
+      - port: 7400
+        ip: 0.0.0.0
+        dstName: /svc/db7400
+      - port: 7401
+        ip: 0.0.0.0
+        dstName: /svc/db7401
+
+    interpreter:
+      kind: io.l5d.namerd.http
+      namespace: default
+      baseUrl: http://namerd:4180
+      periodSecs: 5

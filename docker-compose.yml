@@ -1,0 +1,37 @@
+version: "2"
+services:
+
+  linkerdtcp:
+    build:
+      context: ./
+      dockerfile: containers/linkerdtcp/Dockerfile
+    image: servicediscovery/linkerdtcp
+    environment:
+      - RUST_LOG=linkerd_tcp=debug
+    depends_on:
+      - mongodb
+      - namerd
+      - rabbitmqdb
+
+
+  namerd:
+    build:
+      context: ./
+      dockerfile: containers/namerd/Dockerfile
+    image: servicediscovery/namerd
+
+  tests:
+    build:
+      context: ./
+      dockerfile: containers/tests/Dockerfile
+    image: servicediscovery/tests
+    depends_on:
+      - linkerdtcp
+      - mongodb
+      - rabbitmqdb
+
+  mongodb:
+    image: mongo:3.4.4
+
+  rabbitmqdb:
+    image: rabbitmq:3.6.12-alpine
