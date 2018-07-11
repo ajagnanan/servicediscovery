@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  namerd:
+    image: buoyantio/namerd:1.4.4
+    ports:
+    - 9991:9991
+    volumes:
+    - ./namerd/namerd.yml:/io.buoyant/namerd/config.yml:ro
+    - ./namerd/disco:/disco
+    command:
+    - "/io.buoyant/namerd/config.yml"
+
+  linkerd-tcp:
+    image: linkerd/linkerd-tcp:0.1.1
+    ports:
+    - 9992:9992
+    - 15675:15674
+    volumes:
+    - ./linkerd-tcp/linkerd-tcp.yml:/config.yml:ro
+    command:
+    - "/config.yml"
+
+  rabbitmq:
+    build: ./rabbitmq
+    image: rabbitmq
+    ports:
+    - 15672:15672 # mgmt
+    # - 61613:61613 # stomp
+    # - 15674:15674 # http://127.0.0.1:15674/ws

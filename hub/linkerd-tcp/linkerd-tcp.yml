@@ -1,0 +1,34 @@
+# Administrative control endpoints are exposed on a dedicated HTTP server. Endpoints
+# include:
+# - /metrics -- produces a snapshot of metrics formatted for prometheus.
+# - /shutdown -- POSTing to this endpoint initiates graceful shutdown.
+# - /abort -- POSTing to this terminates the process immediately.
+admin:
+  ip: 0.0.0.0
+  port: 9992
+  metricsIntervalSecs: 10
+
+# the routers section defines a list of routers. each router defines one or more
+# servers, each serving on a different address. routers resolve routes using a
+# configured interpreter, in this case the namerd http interpreter. 
+routers:
+- label: rabbitmq
+  servers:
+  - ip: 0.0.0.0
+    port: 7474
+    dstName: /svc/rabbitmq
+  interpreter:
+    kind: io.l5d.namerd.http
+    baseUrl: http://namerd:4180
+    namespace: default
+    periodSecs: 20
+- label: stomp
+  servers:
+  - ip: 0.0.0.0
+    port: 15674
+    dstName: /svc/stomp
+  interpreter:
+    kind: io.l5d.namerd.http
+    baseUrl: http://namerd:4180
+    namespace: default
+    periodSecs: 20
